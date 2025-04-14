@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="header-box">
+        <h2 class="page-header">Shop Floor</h2>
+        <div class="clock-container">
+          <span>{{ currentDate }}</span> => <span>{{ currentTime }}</span>
+        </div>
+    </div>
+    
+    <div class="dashboard" #carouselContainer>
+        <p-carousel 
+        [value]="paginatedSections" 
+        [numVisible]="1" 
+        [numScroll]="1" 
+        [responsiveOptions]="responsiveOptions"
+        [circular]="true" 
+        [autoplayInterval]="5000">
+        
+        <ng-template let-sectionGroup pTemplate="item"> 
+            <h2 class="title">{{sectionGroup.category}}</h2>
+            <div class="dashboard-slide" >
+              <div class="flex-box" [ngClass]="getSlideClass(sectionGroup.category)">
+                <div *ngFor="let dept of sectionGroup.sections" class="card">
+                    <div *ngIf="isBarChartCategory(sectionGroup.category)">
+                        <div class="chart-box" >
+                          <p-chart 
+                            class="chart"
+                            type="bar" 
+                            [options]="chartOptions" 
+                            [data]="getBarChartData(dept.target, dept.achieved)">
+                          </p-chart>
+                        </div>
+                      </div>
+                      <div *ngIf="!isBarChartCategory(sectionGroup.category)">
+                          <h3 class="card-header">Department: {{ dept.departmentName }}</h3>
+                          <p class="card-body">{{ dept.pendingStatusText }}</p>
+                          <div class="card-footer">
+                            <span>Lots Completed </span>
+                            <span class="badge">{{ dept.issued }}</span>
+                          </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+  </div>
+  
+
+
+<!-- <div class="container">
+    <div class="flex-header">
+        <h2 class="title">Material TransactionS</h2>
+        <div class="clock-container">
+            <span class="date">{{ currentDate }}</span> => <span class="date">{{ currentTime }}</span>
+        </div>
+    </div>
+    <div class="card-grid">
+      <div *ngFor="let dept of departments" class="card">
+        <h3 class="card-header">Department: {{ dept.name }}</h3>
+        <p class="card-body"> No. of Lots pending in Grn for more then 48 Hrs 
+        </p>
+        <div class="card-footer">
+          <span>Lots Completed </span>
+          <span class="badge">{{ dept.issued }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+   -->

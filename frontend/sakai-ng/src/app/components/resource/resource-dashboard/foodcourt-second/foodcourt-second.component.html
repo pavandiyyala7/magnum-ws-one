@@ -1,0 +1,75 @@
+<div class="container">
+    <div class="flex-header">
+        <h2 class="title">Food Court</h2>
+        <div class="clock-container">
+            <span class="date">{{ currentDate }}</span> => <span class="date">{{ currentTime }}</span>
+        </div>
+        <!-- <div class="download-buttons">
+            <button (click)="downloadChartData('word')">Download as Word</button>
+            <button (click)="downloadChartData('pdf')">Download as PDF</button>
+        </div> -->
+        <form [formGroup]="formGroup" class="card flex flex-column align-items-center gap-3">
+            <p-dropdown 
+                formControlName="selectedFileType" 
+                [options]="fileTypes" 
+                optionLabel="name" 
+                placeholder="Select File Type" 
+                class="w-full md:w-56">
+            </p-dropdown>
+            <button pButton label="Download" icon="pi pi-download" (click)="downloadFile()" class="p-button-primary w-full md:w-56"></button>
+        </form>
+    </div>
+
+    <div class="card">
+        <button (click)="previousSlide()">&#9664;</button>
+        <div class="chart-container">
+            <canvas #chartCanvas></canvas>
+        </div>
+        <button (click)="nextSlide()">&#9654;</button>
+    </div>
+</div>
+
+<!-- <div class="dashboard">
+    <p-carousel 
+      [value]="paginatedSections" 
+      [numVisible]="1" 
+      [numScroll]="1" 
+      [responsiveOptions]="responsiveOptions"
+      [circular]="true" 
+      [autoplayInterval]="5000"> -->
+  
+      <!-- <ng-template let-sectionGroup pTemplate="item"> 
+        <div class="dashboard-slide">
+          <div class="flex-box">
+            <div *ngFor="let section of sectionGroup.sections" class="dashboard-card">
+              <h3 class="dashboard-title">{{ section.name }}</h3>
+          
+              <div class="charts-wrapper">
+                <div class="pie-chart-box">
+                  <p-chart 
+                    class="pie" 
+                    type="pie" 
+                    [data]="getPieChartData(section.pieData)" 
+                    [options]="pieChartOptions" 
+                    [plugins]="plugins">
+                  </p-chart>
+                </div>
+          
+                <div class="chart-box">
+                  <p-chart 
+                    class="chart" 
+                    type="bar" 
+                    [data]="getBarChartData(section.barDataIn, section.barDataOut)" 
+                    [options]="chartOptions"
+                    [plugins]="plugins">
+                  </p-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template> -->
+
+      
+    <!-- </p-carousel>
+  </div> -->

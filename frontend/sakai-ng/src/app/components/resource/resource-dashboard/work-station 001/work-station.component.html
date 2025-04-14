@@ -1,0 +1,110 @@
+<div class="card">
+    <div class=" header-box">
+      <div class="clock-container">
+        <span>{{ currentDate }}</span> => <span>{{ currentTime }}</span>
+      </div>
+      <h5 class="shift-header">Shift GS, 08:00 - 06:00</h5>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn blue">Daily Plan Vs Actual</button>
+        <button class="btn green">Andon Call Help</button>
+        <button class="btn blue">Production transaction</button>
+        <button class="btn orange">Breakdown transaction</button>
+        <button class="btn red">Analysis</button>
+      </div>
+      
+      <div class="filters-container">
+        <div class="filters">
+          <div class="process-selector">
+            <p-dropdown [options]="lotNumbers" [(ngModel)]="currentLotNumberId" 
+                        optionLabel="id" optionValue="id" 
+                        (onChange)="onLotNumberChange()"></p-dropdown>
+          </div>
+          
+          <p-floatLabel variant="on" class="filter-item">
+            <input pInputText id="scan_rasin_can" 
+                   [(ngModel)]="currentProcess.scans.scan_rasin_can"
+                   (keyup.enter)="checkCode('scan_rasin_can', currentScans.scan_rasin_can)"
+                   autocomplete="off" />
+            <label for="scan_rasin_can">Scan Resin Can</label>
+          </p-floatLabel>
+      
+          <p-floatLabel variant="on" class="filter-item">
+            <input pInputText id="scan_machine" 
+                   [(ngModel)]="currentScans.scan_machine"
+                   (keyup.enter)="checkCode('scan_machine', currentScans?.scan_machine)"
+                   autocomplete="off" />
+            <label for="scan_machine">Scan Machine</label>
+          </p-floatLabel>
+      
+          <p-floatLabel variant="on" class="filter-item">
+            <input pInputText id="scan_resin_tank" 
+                   [(ngModel)]="currentScans.scan_resin_tank"
+                   (keyup.enter)="checkCode('scan_resin_tank', currentScans.scan_resin_tank)"
+                   autocomplete="off" />
+            <label for="scan_resin_tank">Scan Resin Tank</label>
+          </p-floatLabel>
+      
+          <p-floatLabel variant="on" class="filter-item">
+            <input pInputText id="resin_tank_status" 
+                   [(ngModel)]="currentScans.resin_tank_status"
+                   (keyup.enter)="checkCode('resin_tank_status', currentScans.resin_tank_status)"
+                   autocomplete="off" />
+            <label for="resin_tank_status">Resin Tank Status</label>
+          </p-floatLabel>
+        </div>
+      </div>
+      
+      <!-- Status Messages -->
+      <div *ngIf="successMessage" class="success-message">{{successMessage}}</div>
+      <div *ngIf="errorMessage" class="error-message">{{errorMessage}}</div>
+
+      <div class="tank-display">
+        <div *ngFor="let tank of tanks" class="tank-container">
+          
+            <div class="tank-items">
+              <div class="tank-title">{{ tank.name }}</div>
+              <div class="tank-status" 
+                  [style.backgroundColor]="tank.statusColor"
+                  [ngClass]="{ 'tilted-status': tank.status === 'Ready for Fill' }">
+                {{ tank.status }} 
+              </div>
+
+              <div class="tank-wrapper">
+                <div class="tank-body">
+                  <div class="tank-fill" [ngStyle]="{
+                    'clip-path': getClipPath(tank.level),
+                    'background': gradient
+                  }">
+                    <div class="wave wave1"></div>
+                    <div class="wave wave2"></div>
+                  </div>
+                  <div class="tank-overlay"></div>
+                </div>
+    
+              </div>
+
+              <!-- <span class="lot-display">Lot:{{tank.lotCode}}</span> -->
+            </div>
+            <div class="tank-details card">
+              <div><strong>Lot:</strong> {{ tank.lotCode }}</div>
+              <div><strong>Resin Can:</strong> {{ tank.scan_rasin_can }}</div>
+              <div><strong>Machine:</strong> {{ tank.scan_machine }}</div>
+              <div><strong>Resin Tank:</strong> {{ tank.scan_resin_tank }}</div>
+              <div><strong>Process Status:</strong> {{ tank.status }}</div>
+            </div>
+          
+
+
+        </div>
+      </div>      
+      
+      <div class="legend">
+        <span class="legend-item green">Ready for Fill</span>
+        <span class="legend-item yellow">Filling</span>
+        <span class="legend-item red">Filled</span>
+        <span class="legend-item brown">Under Maintenance</span>
+      </div>
+      
+</div>
