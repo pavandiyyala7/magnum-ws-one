@@ -17,16 +17,41 @@ interface ProcessScans {
   timerActive?: boolean;
 }
 
-interface Process {
-  id: string;
-  scans: ProcessScans;
-  status: 'pending' | 'in-progress' | 'completed';
-}
-
 interface ProductionProcess {
   id: string;
   scans: ProcessScans;
   status: 'pending' | 'active' | 'completed';
+}
+
+interface Tank {
+  id: string;
+  name: string;
+  status: string;
+  level: number;
+  lotCode: string;
+  statusColor: string;
+  resinCanId?: string;
+  machineId?: string;
+  remainingTime?: string;
+  fillPercentage?: number;
+}
+
+interface InventoryItem {
+  id: string;
+  name: string;
+  type: 'resin-can' | 'machine' | 'resin-tank';
+}
+
+interface Machine {
+  id: string;
+  name: string;
+  tanks: Tank[];
+}
+
+interface ResinCan {
+  id: string;
+  name: string;
+  machines: Machine[];
 }
 
 @Component({
@@ -36,23 +61,149 @@ interface ProductionProcess {
   templateUrl: './work-station.component.html',
   styleUrl: './work-station.component.scss'
 })
-export class WorkStationComponent implements OnInit, OnDestroy {
+export class WorkStationComponent implements OnInit, OnDestroy{
 
-  qrValue = 'https://example.com';
   currentDate: string = '';
   currentTime: string = '';
   timeInterval: any;
 
-  tank = {
-    level: 60,
-  };
+  completedProcesses: ProductionProcess[] = [];
   
+  tanks: Tank[] = [
+    {
+      id: 'TANK001',
+      name: 'A Resin Tank',
+      status: 'Ready for Fill',
+      level: 0,
+      lotCode: '',
+      statusColor: '#2ecc71'
+    },
+    {
+      id: 'TANK002',
+      name: 'B Resin Tank',
+      status: 'Ready for Fill',
+      lotCode: '',
+      level: 0,
+      statusColor: '#2ecc71'
+    }
+  ];
+
+  // resinCans: ResinCan[] = [];
+  allMachines: Machine[] = [];
+  allTanks: Tank[] = [];
+  filteredTanks: Tank[] = [];
+  displayedTanks: Tank[] = [];
+  currentTankBeingFilled: Tank | null = null;
+
   lotNumbers: any[] = [];
   currentLotNumberId: string = '';
   currentLotNumber: any;
   
-  gradient = 'linear-gradient(to top, #00ff88, #66ffcc)';
-  fillTransition = 'clip-path 1s ease-in-out';
+  resinCans: ResinCan[] = [
+    {
+      id: 'C1',
+      name: 'Resin Can 1',
+      machines: [
+        {
+          id: 'M1-1',
+          name: 'Machine 1',
+          tanks: [
+            {
+              id: 'T1-1-1',
+              name: 'Tank 1',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            },
+            {
+              id: 'T1-1-2',
+              name: 'Tank 2',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            }
+          ]
+        },
+        {
+          id: 'M1-2',
+          name: 'Machine 2',
+          tanks: [
+            {
+              id: 'T1-2-1',
+              name: 'Tank 1',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            },
+            {
+              id: 'T1-2-2',
+              name: 'Tank 2',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'CAN002',
+      name: 'Resin Can 2',
+      machines: [
+        {
+          id: 'M2-1',
+          name: 'Machine 1',
+          tanks: [
+            {
+              id: 'T2-1-1',
+              name: 'Tank 1',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            },
+            {
+              id: 'T2-1-2',
+              name: 'Tank 2',
+              status: 'Empty',
+              level: 0,
+              lotCode: '',
+              statusColor: 'gray',
+              resinCanId: '',
+              machineId: '',
+              remainingTime: '',
+              fillPercentage: 0
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
   
   processes: ProductionProcess[] = [
     {
@@ -84,43 +235,44 @@ export class WorkStationComponent implements OnInit, OnDestroy {
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
-  tanks = [
-    {
-      name: 'A Resin Tank',
-      status: 'Ready for Fill',
-      level: 0,
-      lotCode: '',
-      statusColor: '#2ecc71'
-    },
-    {
-      name: 'B Resin Tank',
-      status: 'Ready for Fill',
-      lotCode: '',
-      level: 0,
-      statusColor: '#2ecc71'
-    }
-  ];
-
   sampleLotNumbers = [
-    { id: 'LOT-00001', name: 'Production Batch 1', status: 'Active' },
-    { id: 'LOT-00002', name: 'Production Batch 2', status: 'Active' },
-    { id: 'LOT-00003', name: 'Quality Control', status: 'Hold' },
-    { id: 'LOT-00004', name: 'Shipping Batch', status: 'Completed' }
+    { id: 'LOT-01', name: 'Production Batch 1', status: 'Active' },
+    { id: 'LOT-02', name: 'Production Batch 2', status: 'Active' },
+    { id: 'LOT-03', name: 'Quality Control', status: 'Hold' },
+    { id: 'LOT-04', name: 'Shipping Batch', status: 'Completed' }
   ];
 
   unlockSequence = [
-    { id: 'scan_rasin_can', code: 'CAN123', nextField: 'scan_machine' },
-    { id: 'scan_machine', code: 'MACH456', nextField: 'scan_resin_tank' },
-    { id: 'scan_resin_tank', code: 'TANK789', nextField: 'resin_tank_status' },
-    { id: 'resin_tank_status', code: 'STATUS012' }
+    { 
+      id: 'scan_rasin_can', 
+      validIds: this.resinCans.map(can => can.id),
+      nextField: 'scan_machine',
+      errorMessage: 'Invalid Resin Can ID'
+    },
+    { 
+      id: 'scan_machine', 
+      validIds: this.allMachines.map(machine => machine.id),
+      nextField: 'scan_resin_tank',
+      errorMessage: 'Invalid Machine ID'
+    },
+    { 
+      id: 'scan_resin_tank', 
+      validIds: this.allTanks.map(tank => tank.id),
+      nextField: 'resin_tank_status',
+      errorMessage: 'Invalid Resin Tank ID'
+    },
+    { 
+      id: 'resin_tank_status', 
+      code: 'STATUS012' 
+    }
   ];
 
-  // Removed unlockedFields array since all fields are now unlocked
-
   ngOnInit(): void {
+    this.initializeInventory();
     this.initializeLotNumbers();
+    this.updateFilteredTanks(['T1-1-1', 'T1-1-2']);
     this.updateTime();
-    this.timeInterval = setInterval(() => {
+    this.timeInterval = setInterval(() => { 
       this.updateTime();
     }, 1000);
   }
@@ -131,6 +283,19 @@ export class WorkStationComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateFilteredTanks(ids: string | string[]): void {
+    const searchIds = Array.isArray(ids) ? ids : [ids];
+   
+    const newMatches = this.tanks.filter(tank => 
+      searchIds.some(id => tank.id.includes(id))
+    );
+    this.filteredTanks = [
+      ...this.filteredTanks,
+      ...newMatches
+    ].slice(-2); 
+  }
+
+  
   get currentProcess(): ProductionProcess {
     return this.processes.find(p => p.id === this.currentProcessId)!;
   }
@@ -158,13 +323,6 @@ export class WorkStationComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLotNumberChange(): void {
-    this.currentLotNumber = this.lotNumbers.find(
-      lot => lot.id === this.currentLotNumberId
-    );
-    console.log('Selected Lot Number:', this.currentLotNumber);
-    this.addNewProcess();
-  }
 
   onProcessChange() {
     this.currentActiveField = 'scan_rasin_can';
@@ -172,61 +330,271 @@ export class WorkStationComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
   }
 
-  checkCode(fieldId: string, enteredValue: string | undefined) {
-    if (!enteredValue || !this.currentProcess) return;
-
-    const currentStep = this.unlockSequence.find(step => step.id === fieldId);
+  updateTanks(newTanks: Tank[]) {
+    const tankA = this.tanks.find(t => t.name === 'A Resin Tank');
+    if (tankA) {
+      const newTankA = newTanks.find(t => t.name === 'A Resin Tank');
+      if (newTankA) {
+        Object.assign(tankA, newTankA);
+      }
+    }
     
-    if (currentStep && enteredValue === currentStep.code) {
-      let successMsg = '';
-      let timer = false;
-      
-      switch(fieldId) {
-        case 'scan_rasin_can':
-          successMsg = 'Verified Resin CAN, Please Scan Machine';
-          break;
-        case 'scan_machine':
-          successMsg = 'Verified M/C, Please Scan \'B\' Resin Tank';
-          break;
-        case 'scan_resin_tank':
-          successMsg = 'Verified Resin Tank, Filling in progress...';
-          timer = true;
-          this.updateTankStatus('B Resin Tank', 'Filling', '#fcd031', 50, '1234');
-          this.startCountdown(45);
-          break;
-        default:
-          successMsg = `Verified ${this.getFieldLabel(fieldId)}`;
+    const tankB = this.tanks.find(t => t.name === 'B Resin Tank');
+    if (tankB) {
+      const newTankB = newTanks.find(t => t.name === 'B Resin Tank');
+      if (newTankB) {
+        Object.assign(tankB, newTankB);
       }
-
-      this.successMessage = successMsg;
-      
-      if (currentStep.nextField) {
-        this.currentActiveField = currentStep.nextField;
-        
-        if (!timer) {
-          setTimeout(() => {
-            const nextField = document.getElementById(currentStep.nextField!);
-            if (nextField) nextField.focus();
-          }, 100);
-        }
-      }
-      
-      if (!timer) {
-        setTimeout(() => this.successMessage = null, 3000);
-      }
-      
-      if (fieldId === 'resin_tank_status') {
-        this.currentProcess.scans.verified = true;
-        this.currentProcess.status = 'completed';
-      }
-    } else {
-      this.errorMessage = `Invalid code for ${this.getFieldLabel(fieldId)}`;
-      setTimeout(() => this.errorMessage = null, 3000);
     }
   }
 
-  // Removed isFieldDisabled() method since all fields are now enabled
+  initializeInventory(): void {
+      for (let i = 1; i <= 5; i++) {
+        const canId = `C${i}`;  // Simplified to C1, C2,...C5
+        const can: ResinCan = {
+          id: canId,
+          name: `Can ${i}`,
+          machines: []
+        };
+    
+        for (let j = 1; j <= 12; j++) {
+          const machineId = `M${i}-${j}`;  // Simplified to M1-1, M1-2,...M5-12
+          const machine: Machine = {
+            id: machineId,
+            name: `M${i}-${j}`,
+            tanks: []
+          };
+    
+          for (let k = 1; k <= 2; k++) {
+            const tankId = `T${i}-${j}-${k}`;  // Simplified to T1-1-1, T1-1-2,...T5-12-2
+            const tank: Tank = {
+              id: tankId,
+              name: `${String.fromCharCode(64 + k)} Resin Tank`, 
+              status: 'Ready for Fill',
+              level: 0,
+              lotCode: '',
+              statusColor: '#2ecc71',
+              machineId: machineId,
+              resinCanId: ''
+            };
+    
+            machine.tanks.push(tank);
+            this.allTanks.push(tank);
+          }
+    
+          can.machines.push(machine);
+          this.allMachines.push(machine);
+        }
+    
+        this.resinCans.push(can);
+      }
+    
+      this.tanks = [...this.allTanks];
+    }
+  
+  checkCode(fieldId: string, enteredValue: string | undefined) {
+    if (!enteredValue || !this.currentProcess) {
+        this.errorMessage = 'Please enter a valid code';
+        setTimeout(() => this.errorMessage = null, 3000);
+        return;
+    }
 
+    const currentStep = this.unlockSequence.find(step => step.id === fieldId);
+    
+    if (!currentStep) {
+        this.errorMessage = 'Invalid operation';
+        setTimeout(() => this.errorMessage = null, 3000);
+        return;
+    }
+
+    
+    let isValid = false;
+    let matchedItem: any = null;
+    let errorMsg = '';
+
+    switch(fieldId) {
+        case 'scan_rasin_can':
+            matchedItem = this.resinCans.find(can => can.id === enteredValue);
+            isValid = !!matchedItem;
+            errorMsg = 'Invalid Resin Can ID. Please scan a valid Resin Can.';
+            break;
+
+        case 'scan_machine':
+            if (!this.currentProcess.scans.scan_rasin_can) {
+                errorMsg = 'Please scan Resin Can first';
+                break;
+            }
+            
+            const currentCan = this.resinCans.find(c => c.id === this.currentProcess.scans.scan_rasin_can);
+            if (!currentCan) {
+                errorMsg = 'Invalid Resin Can reference';
+                break;
+            }
+            
+            matchedItem = currentCan.machines.find(m => m.id === enteredValue);
+            isValid = !!matchedItem;
+            errorMsg = 'Invalid Machine ID for this Resin Can. Please scan a valid Machine.';
+            break;
+
+        case 'scan_resin_tank':
+            if (!this.currentProcess.scans.scan_machine) {
+                errorMsg = 'Please scan Machine first';
+                break;
+            }
+            
+            const currentMachine = this.allMachines.find(m => m.id === this.currentProcess.scans.scan_machine);
+            if (!currentMachine) {
+                errorMsg = 'Invalid Machine reference';
+                break;
+            }
+            
+            matchedItem = currentMachine.tanks.find(t => t.id === enteredValue);
+            isValid = !!matchedItem;
+            
+            if (matchedItem) {
+              if (matchedItem.status === 'Filling') {
+                isValid = false;
+                errorMsg = 'This tank is currently being filled. Please wait.';
+              } 
+              else if (matchedItem.status === 'Filled') {
+                    isValid = false;
+                    errorMsg = 'This tank is already filled. Please select another tank.';
+                } else {
+                    this.currentTankBeingFilled = matchedItem;
+                }
+            } else {
+                errorMsg = 'Invalid Tank ID for this Machine. Please scan a valid Tank.';
+            }
+            break;
+
+        default:
+            isValid = enteredValue === currentStep.code;
+            errorMsg = `Invalid ${this.getFieldLabel(fieldId)} code`;
+    }
+
+    if (isValid) {
+        let successMsg = '';
+        let timer = false;
+        
+        switch(fieldId) {
+            case 'scan_rasin_can':
+                successMsg = 'Resin Can verified. Please scan Machine.';
+                setTimeout(() => {
+                    const nextField = document.getElementById('scan_machine');
+                    if (nextField) nextField.focus();
+                }, 100);
+                break;
+
+            case 'scan_machine':
+                successMsg = 'Machine verified. Please scan Resin Tank.';
+                setTimeout(() => {
+                    const nextField = document.getElementById('scan_resin_tank');
+                    if (nextField) nextField.focus();
+                }, 100);
+                break;
+
+            case 'scan_resin_tank':
+                if (this.currentTankBeingFilled) {
+                    this.currentTankBeingFilled.resinCanId = this.currentProcess.scans.scan_rasin_can;
+                    this.currentTankBeingFilled.lotCode = this.currentLotNumberId;
+                    this.updateFilteredTanks(enteredValue)
+                    successMsg = `Tank ${this.currentTankBeingFilled.name} verified. Filling process started...`;
+                    timer = true;
+                    this.startTankFilling(this.currentTankBeingFilled);
+                }
+                break;
+
+                case 'resin_tank_status':
+                  successMsg = `Resin Tank filled and status updated successfully!`;
+                  if (this.currentProcess) {
+                    this.currentProcess.scans.verified = true;
+                    this.currentProcess.status = 'completed';
+                
+                    this.completedProcesses.push(this.currentProcess);
+                
+                    this.processes = this.processes.filter(p => p.id !== this.currentProcess!.id);
+                  }
+                  break;
+                
+
+            default:
+                successMsg = `Operation successful: ${this.getFieldLabel(fieldId)}`;
+        }
+
+        this.successMessage = successMsg;
+        this.errorMessage = null;
+        
+        if (!timer) {
+            setTimeout(() => this.successMessage = null, 3000);
+        }
+        
+    } else {
+        this.errorMessage = errorMsg;
+        this.successMessage = null;
+        setTimeout(() => this.errorMessage = null, 3000);
+        
+        switch(fieldId) {
+            case 'scan_rasin_can':
+                this.currentProcess.scans.scan_rasin_can = '';
+                break;
+            case 'scan_machine':
+                this.currentProcess.scans.scan_machine = '';
+                break;
+            case 'scan_resin_tank':
+                this.currentProcess.scans.scan_resin_tank = '';
+                break;
+        }
+        
+        setTimeout(() => {
+            const currentField = document.getElementById(fieldId);
+            if (currentField) currentField.focus();
+        }, 100);
+    }
+}
+ 
+startTankFilling(tank: Tank) {
+  tank.status = 'Filling';
+  tank.statusColor = '#fcd031';
+  
+  const fillDuration = 45; 
+  let remaining = fillDuration;
+  
+  tank.remainingTime = this.formatTime(remaining);
+  tank.fillPercentage = 0;
+
+  const interval = setInterval(() => {
+    remaining--;
+    const progress = Math.round(((fillDuration - remaining) / fillDuration) * 100);
+    
+    tank.level = progress;
+    tank.fillPercentage = progress;
+    tank.remainingTime = this.formatTime(remaining);
+    
+    this.successMessage = `Filling Is Going On`;
+    
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      tank.status = 'Filled';
+      tank.statusColor = '#e74c3c';
+      tank.remainingTime = 'Completed';
+      tank.fillPercentage = 100;
+      
+      this.successMessage = `${tank.name} filled successfully!`;
+      this.currentTankBeingFilled = null;
+      
+      setTimeout(() => {
+        this.successMessage = null;
+        const nextField = document.getElementById('resin_tank_status');
+        if (nextField) nextField.focus();
+        
+        if (this.currentProcess) {
+          this.currentProcess.scans.resin_tank_status = `${tank.name} is Filled`;
+        }
+      }, 3000);
+    }
+  }, 1000);
+}
   getFieldLabel(fieldId: string): string {
     const labels: {[key: string]: string} = {
       'scan_rasin_can': 'Scan Rasin Can',

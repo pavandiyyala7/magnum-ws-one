@@ -1,411 +1,280 @@
 .clock-container {
-    font-family: 'Digital-7', monospace;
-    font-size: 24px;
-    color: rgb(85, 82, 82); /* Green color */
-    text-shadow: 0 0 5px rgb(156, 215, 238);
-    background-color: rgba(0, 0, 0,0.9);
-    // padding: 5px 10px;
-    border-radius: 5px;
-    background-color: transparent;
-    margin: 1rem 2rem;
+  font-family: "Digital-7", monospace;
+  font-size: 24px;
+  color: rgb(85, 82, 82);
+  text-shadow: 0 0 5px rgb(156, 215, 238);
+  background-color: rgba(0, 0, 0, 0.9);
+  // padding: 5px 10px;
+  border-radius: 5px;
+  background-color: transparent;
+  margin: 1rem 2rem;
+}
+
+.shift-header {
+  display: grid;
+  align-items: center;
+  color: #333;
+  border-radius: 5px;
+  font-weight: 600;
+  background-color: transparent;
+  margin: 0 2rem;
+  margin-bottom: 0;
+}
+
+.header-box {
+  display: flex;
+  justify-content: space-between !important;
+  max-width: 100%;
+  margin-bottom: 0.3rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  background-color: rgb(250, 250, 253);
+}
+
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.btn.blue {
+  background-color: #3498db;
+}
+.btn.green {
+  background-color: #2ecc71;
+}
+.btn.orange {
+  background-color: #e67e22;
+}
+.btn.red {
+  background-color: #e74c3c;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin: 20px 0 0 0;
+}
+
+.filters .filter-item input {
+  width: 100%;
+}
+
+.filter-item {
+  transition: all 0.3s ease;
+  flex-grow: 1;
+}
+
+
+.tank-display {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 5px 0 20px 0;
+  border: 0.1rem solid #e3e3ec;
+  border-radius: 0.5rem;
+}
+
+.tank-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.tank-title {
+  margin: 5px 0;
+  font-weight: bold;
+  padding: 0.1rem 1rem;
+  border-radius: 0.3rem;
+  text-align: center;
+  border: 0.1rem solid #e3e3ec;
+}
+
+.tank-status {
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  margin-top: 1rem;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  font-size: 12px;
+  margin-bottom: 5px;
+  white-space: pre-line;
+}
+
+.tilted-status {
+  transform: rotate(-7deg);
+  transform-origin: left bottom;
+}
+
+.tank-wrapper {
+  width: 150px;
+  height: 180px;
+  margin: 0 auto 1rem auto;
+  position: relative;
+}
+
+.tank-body {
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+  // background-image: url('../../../../../assets/demo/images/avatar/profile.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 55% 100%, 45% 100%, 0 70%);
+}
+
+.tank-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      to top,
+      rgba(0, 255, 136, 0.7),
+      rgba(102, 255, 204, 0.7)
+  );
+  transition: clip-path 0.5s ease in ease-in-out;
+  mix-blend-mode: multiply; 
+}
+
+.tank-timer {
+position: absolute;
+bottom: 30%;
+left: 0;
+right: 0;
+text-align: center;
+color: rgb(48, 46, 46);
+font-weight: bold;
+text-shadow: 0 0 3px rgba(0,0,0,0.8);
+
+.timer-text {
+  font-size: 1.2rem;
+  z-index: 30;
+}
+
+.percentage-text {
+  font-size: 0.9rem;
+}
+}
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  bottom: -25%;
+  background: rgba(0, 255, 128, 0.4);
+  opacity: 0.5;
+  border-radius: 40%;
+}
+
+.wave1 {
+  animation: wave1 4s linear infinite;
+  left: -50%;
+}
+
+.wave2 {
+  animation: wave2 6s linear infinite reverse;
+  left: -50%;
+  background: rgba(0, 200, 255, 0.3);
+}
+
+@keyframes wave1 {
+  0% {
+      transform: translateX(0) scaleY(1);
   }
-  
-    .shift-header{
-      display: grid;
-      align-items: center; 
-  
-      color: #333;
-      // text-shadow: 0 0 5px rgb(156, 215, 238);
-      // background-color: rgba(0, 0, 0,0.9);
-      border-radius: 5px;
-      font-weight: 600;
-      background-color: transparent;
-      margin: 0 2rem;
-      margin-bottom: 0;
-    }
-    
-    .header-box{
-      display: flex;
-      justify-content: space-between !important;
-      max-width: 100%;
-      // border: 1px solid rgb(235, 232, 232);
-      margin-bottom: 0.3rem;
-      text-align: center;
-      border-radius: 0.5rem;
-      background-color: rgb(250, 250, 253);
-    }
-
-    qrcode {
-        height: 10px;
-        width: 10px;
-    }
-    .toolbar {
-        display: flex;
-        gap: 10px;
-      }
-      
-      .btn {
-        padding: 0.5rem 1rem;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        flex-grow: 1;
-        cursor: pointer;
-      }
-      
-      .btn.blue { background-color: #3498db; }
-      .btn.green { background-color: #2ecc71; }
-      .btn.orange { background-color: #e67e22; }
-      .btn.red { background-color: #e74c3c; }
-      
-      .filters {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        margin: 20px 0 0 0;
-      }
-      .filters .filter-item {
-        flex-grow: 1; 
-        min-width: 0; 
-      }
-      
-      .filters .filter-item input {
-        width: 100%;
-      }
-
-      /* Add to your CSS */
-      .filter-item {
-        transition: all 0.3s ease;
-      }
-
-      .filter-item input:disabled {
-        opacity: 0.6;
-        background-color: #f5f5f5;
-      }
-
-      .p-message {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-      }
-
-      .scanned-value {
-        font-size: 0.8rem;
-        color: #4CAF50; /* Green color for verified scan */
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-      }
-
-      .qr-info {
-        display: flex;
-        gap: 20px;
-        font-size: 14px;
-      }
-      
-      .match-label {
-        font-weight: bold;
-        color: green;
-      }
-      
-      .tank-display {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        margin: 5px 0 20px 0;
-        border: 0.1rem solid #e3e3ec;
-        border-radius: 0.5rem;
-      }
-      
-      .tank-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-        // width: 10rem;
-        
-      }
-      
-      .tank-title {
-        // font-weight: 300;
-        margin: 5px 0;
-        // width: fit-content;
-        padding: 0.1rem 1rem;
-        border-radius: 0.3rem;
-        text-align: center;
-        border: 0.1rem solid #e3e3ec;
-      }
-      
-      .tank-status {
-        color: white;
-        padding: 5px;
-        border-radius: 5px;
-        margin-top: 1rem;
-        font-size: 14px;
-        text-align: center;
-        width: 100%;
-      }
-
-      // .tank-status {
-      //   color: white;
-      //   padding: 5px 10px;
-      //   border-radius: 5px;
-      //   margin-top: 1rem;
-      //   font-size: 14px;
-      //   text-align: center;
-      //   width: fit-content;
-      //   transition: transform 0.3s ease;
-      // }
-
-      
-      .filters {
-        display: flex;
-        flex-wrap: nowrap; /* Absolutely no wrapping */
-        gap: 1rem;
-        align-items: center;
-        margin: 20px 0 0 0;
-        width: 100%;
-      }
-      
-      /* Make all items shrink proportionally */
-      .filters > * {
-        flex: 1 1 0%; /* Equal flex basis, can grow and shrink */
-        min-width: 0; /* Allow items to shrink below their content width */
-      }
-      
-      /* Ensure inputs and dropdown take full width of their container */
-      .filters .p-dropdown,
-      .filters .p-float-label input {
-        width: 100%;
-      }
-      
-      /* Optional: Add ellipsis for overflow text */
-      .filters .p-float-label label {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: block;
-        width: 100%;
-      }
-      
-      
-      .tilted-status {
-        transform: rotate(-7deg);
-        transform-origin: left bottom;
-      }
-      
-      .tank-wrapper {
-        width: 150px;
-        height: 180px;
-        margin: 0 auto 1rem auto;
-        position: relative;
-      }
-      
-      .tank-body {
-        width: 100%;
-        height: 100%;
-        background: #e0e0e0;
-        // background-image: url('../../../../../assets/demo/images/avatar/profile.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        border-radius: 10px 10px 0 0;
-        position: relative;
-        overflow: hidden;
-        clip-path: polygon(0 0, 100% 0, 100% 70%, 55% 100%, 45% 100%, 0 70%);
-      }
-      
-      .tank-fill {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        /* Semi-transparent gradient (adjust alpha values) */
-        background: linear-gradient(to top, rgba(0, 255, 136, 0.7), rgba(102, 255, 204, 0.7));
-        transition: clip-path 0.5s ease in ease-in-out;
-        /* Allow background image to show through */
-        mix-blend-mode: multiply; /* Optional: Blends gradient with background */
-      }
-
-      
-      .tank-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        /* Optional: Add subtle texture or border effect */
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      
-      
-      .wave {
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        bottom: -25%;
-        background: rgba(0, 255, 128, 0.4);
-        opacity: 0.5;
-        border-radius: 40%;
-      }
-      
-      .wave1 {
-        animation: wave1 4s linear infinite;
-        left: -50%;
-      }
-      
-      .wave2 {
-        animation: wave2 6s linear infinite reverse;
-        left: -50%;
-        background: rgba(0, 200, 255, 0.3);
-      }
-      
-      @keyframes wave1 {
-        0% { transform: translateX(0) scaleY(1); }
-        50% { transform: translateX(25%) scaleY(0.95); }
-        100% { transform: translateX(0) scaleY(1); }
-      }
-      
-      @keyframes wave2 {
-        0% { transform: translateX(0) scaleY(1); }
-        50% { transform: translateX(-25%) scaleY(1.05); }
-        100% { transform: translateX(0) scaleY(1); }
-      }
-      
-      .tank-overlay {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        // background-image: url('assets/images/tank-texture.png'); /* Optional */
-        background-size: cover;
-        opacity: 0.1;
-        pointer-events: none;
-        z-index: 2;
-      }
-      
-      .lot-display{
-        font-weight: 300;
-        margin: 5px 0;
-        padding: 0.1rem 1rem;
-        border-radius: 0.3rem;
-        text-align: center;
-        border: 0.1rem solid #e3e3ec;
-      }
-
-      .legend-item {
-        margin: 0 10px;
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
-      }
-      
-      .legend-item.green { background-color: #2ecc71; }
-      .legend-item.red { background-color: #e74c3c; }
-      .legend-item.yellow { background-color: #fcd031; }
-      .legend-item.brown { background-color: #8b4513; }
-      
-
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        padding: 1rem;
-      }
-      
-      .machine-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .tanks-wrapper {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1rem;
-      }
-      
-      .tank-box {
-        text-align: center;
-        width: 120px;
-      }
-      
-      .tank-title {
-        font-weight: bold;
-        margin-bottom: 4px;
-      }
-      
-      .tank-status {
-        color: white;
-        font-size: 12px;
-        padding: 5px;
-        border-radius: 5px;
-        margin-bottom: 5px;
-        white-space: pre-line;
-      }
-      
-      .tank {
-        width: 100px;
-        height: 160px;
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        position: relative;
-        background-image: linear-gradient(to top, #e0f7ff, #ffffff);
-        overflow: hidden;
-        margin: 0 auto;
-      }
-      
-      .liquid {
-        background-color: #00bfff;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        transition: height 0.4s ease;
-      }
-
-
-      .process-selector {
-        margin-bottom: 20px;
-      }
-      
-      .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      
-      .filter-item {
-        flex: 1 1 1;
-      }
-      
-      .success-message {
-        color: green;
-        margin-top: 10px;
-        font-weight: bold;
-      }
-      
-      .error-message {
-        color: red;
-        margin-top: 10px;
-        font-weight: bold;
-      }
-      
-      .verified-input {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-      }
-      
-  .tank-note{
-    display: flex;
-    flex-direction: row-reverse;
-  }  
-  .tank-items{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  50% {
+      transform: translateX(25%) scaleY(0.95);
   }
-  .tank-details{
-    width: 15rem;
+  100% {
+      transform: translateX(0) scaleY(1);
   }
+}
+
+@keyframes wave2 {
+  0% {
+      transform: translateX(0) scaleY(1);
+  }
+  50% {
+      transform: translateX(-25%) scaleY(1.05);
+  }
+  100% {
+      transform: translateX(0) scaleY(1);
+  }
+}
+
+
+.lot-display {
+  font-weight: 300;
+  margin: 5px 0;
+  padding: 0.1rem 1rem;
+  border-radius: 0.3rem;
+  text-align: center;
+  border: 0.1rem solid #e3e3ec;
+}
+
+.legend-item {
+  margin: 0 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.legend-item.green {
+  background-color: #2ecc71;
+}
+.legend-item.red {
+  background-color: #e74c3c;
+}
+.legend-item.yellow {
+  background-color: #fcd031;
+}
+.legend-item.brown {
+  background-color: #8b4513;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.verified-input {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.tank-note {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.tank-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tank-details {
+  width: 15rem;
+}
+
